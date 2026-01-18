@@ -1,6 +1,14 @@
 with customers as (
 
+    {% if var('scenario', '') == 'D1_missing_column' %}
+    select 
+        customer_id,
+        first_name,
+        last_name
+    from {{ ref('stg_customers') }}
+    {% else %}
     select * from {{ ref('stg_customers') }}
+    {% endif %}
 
 ),
 
