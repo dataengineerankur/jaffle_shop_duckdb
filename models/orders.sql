@@ -15,7 +15,11 @@ payments as (
 order_payments as (
 
     select
+        {% if var('scenario', 'default') == 'D2_type_change' -%}
+        cast(order_id as varchar) as order_id,
+        {% else -%}
         order_id,
+        {% endif -%}
 
         {% for payment_method in payment_methods -%}
         sum(case when payment_method = '{{ payment_method }}' then amount else 0 end) as {{ payment_method }}_amount,
@@ -25,14 +29,23 @@ order_payments as (
 
     from payments
 
-    group by order_id
+    group by 
+        {% if var('scenario', 'default') == 'D2_type_change' -%}
+        cast(order_id as varchar)
+        {% else -%}
+        order_id
+        {% endif -%}
 
 ),
 
 final as (
 
     select
+        {% if var('scenario', 'default') == 'D2_type_change' -%}
+        cast(orders.order_id as varchar) as order_id,
+        {% else -%}
         orders.order_id,
+        {% endif -%}
         orders.customer_id,
         orders.order_date,
         orders.status,
