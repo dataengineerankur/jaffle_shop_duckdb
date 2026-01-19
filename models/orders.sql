@@ -32,7 +32,7 @@ order_payments as (
 final as (
 
     select
-        orders.order_id,
+        coalesce(orders.order_id, order_payments.order_id) as order_id,
         orders.customer_id,
         orders.order_date,
         orders.status,
@@ -45,11 +45,11 @@ final as (
 
         order_payments.total_amount as amount
 
-    from orders
+    from order_payments
 
 
-    left join order_payments
-        on orders.order_id = order_payments.order_id
+    left join orders
+        on order_payments.order_id = orders.order_id
 
 )
 
