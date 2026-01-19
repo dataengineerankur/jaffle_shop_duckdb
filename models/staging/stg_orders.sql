@@ -17,6 +17,7 @@ renamed as (
         status
 
     from source
+    where id is not null
 
 )
 
